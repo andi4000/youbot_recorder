@@ -1,0 +1,3 @@
+<launch>
+	<node name="record" pkg="youbot_recorder" type="record" output="screen" />
+</launch>
