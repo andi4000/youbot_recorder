@@ -10,6 +10,9 @@
  * - manual text file writing (here)
  * - rosbag in launch file
  * 
+ * rosbag record /cmd_vel /youbotStalker/object_tracking/object_detected /youbotStalker/object_tracking/cam_x_pos /youbotStalker/object_tracking/cam_y_pos /youbotStalker/object_tracking/distance
+ * 
+ * 
  */
 
 #include "ros/ros.h"
