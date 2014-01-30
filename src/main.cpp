@@ -2,10 +2,12 @@
  * Telemetry Recorder
  * 
  * Recording:
- * - robot speed (lin_x, lin_y, ang_z)
+ * + robot speed (lin_x, lin_y, ang_z)
  * + user distance
  * + user lateral position (x,y)
+ * - gesture data
  * 
+ *  
  * We do this in 2 parallel threads:
  * - manual text file writing (here)
  * - rosbag in launch file
@@ -32,12 +34,20 @@ int g_userPosY = 0;
 float g_userDistance = 0;
 geometry_msgs::Twist g_velocity;
 
+int g_gestState = 0;
+float g_gestOffLinX = 0;
+float g_gestOffLinY = 0;
+
 
 void callbackObjDetected(const std_msgs::Bool::ConstPtr& msg){ g_userDetected = msg->data; }
 void callbackPosX(const std_msgs::Int32::ConstPtr& msg){g_userPosX = msg->data;}
 void callbackPosY(const std_msgs::Int32::ConstPtr& msg){g_userPosY = msg->data;}
 void callbackDistance(const std_msgs::Float32::ConstPtr& msg){g_userDistance = msg->data;}
 void callbackVelocity(const geometry_msgs::Twist& msg){g_velocity = msg;}
+
+void callbackGestureState(const std_msgs::Int32::ConstPtr& msg){g_gestState = msg->data;}
+void callbackGestureOffsetLinX(const std_msgs::Float32::ConstPtr& msg){g_gestOffLinX = msg->data;}
+void callbackGestureOffsetLinY(const std_msgs::Float32::ConstPtr& msg){g_gestOffLinY = msg->data;}
 
 int main(int argc, char** argv)
 {
@@ -50,6 +60,10 @@ int main(int argc, char** argv)
 	ros::Subscriber sub_PosY = n.subscribe("/youbotStalker/object_tracking/cam_y_pos", 1000, &callbackPosY);
 	ros::Subscriber sub_distance = n.subscribe("/youbotStalker/object_tracking/distance", 1000, &callbackDistance);
 	ros::Subscriber sub_velocity = n.subscribe("/cmd_vel", 1000, &callbackVelocity);
+	
+	ros::Subscriber sub_gestureState = n.subscribe("/youbotStalker/gesture_processor/state", 1000, &callbackGestureState);
+	ros::Subscriber sub_gestureOffLinX = n.subscribe("/youbotStalker/gesture_processor/offset_linear_x", 1000, &callbackGestureOffsetLinX);
+	ros::Subscriber sub_gestureOffLinY = n.subscribe("/youbotStalker/gesture_processor/offset_linear_y", 1000, &callbackGestureOffsetLinY);
 
 
 	ros::Rate r(50); //recording at 40 hz 
@@ -75,7 +89,7 @@ int main(int argc, char** argv)
 	ros::Time begin = ros::Time::now();
 	ros::Duration duration(0.0);
 	
-	outFile<<"second;userDetected;userPosX;userPosY;userDistance;velLinX;velLinY;velAngZ\n";
+	outFile<<"second;userDetected;userPosX;userPosY;userDistance;velLinX;velLinY;velAngZ;gestureState;gestureOffLinX;gestureOffLinY\n";
 	
 	while (n.ok()){
 		duration = ros::Time::now() - begin;
@@ -85,7 +99,10 @@ int main(int argc, char** argv)
 			ROS_INFO("File: %s on %.0f seconds", filename, duration.toSec());
 		
 		outFile<<timebuf<<g_userDetected<<";"<<g_userPosX<<";"<<g_userPosY<<";"<<g_userDistance<<";";
-		outFile<<g_velocity.linear.x<<";"<<g_velocity.linear.y<<";"<<g_velocity.angular.z<<"\n";
+		outFile<<g_velocity.linear.x<<";"<<g_velocity.linear.y<<";"<<g_velocity.angular.z<<";";
+		outFIle<<g_gestState<<";"<<g_gestOffLinX<<";"<<g_gestOffLinY<<";";
+		
+		outFile<<"\n";
 
 		ros::spinOnce();
 		r.sleep();
