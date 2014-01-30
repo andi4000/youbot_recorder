@@ -95,12 +95,15 @@ int main(int argc, char** argv)
 		duration = ros::Time::now() - begin;
 		sprintf(timebuf, "%.5f", duration.toSec());
 		
+		//char writeBuf[256];
+		//sprintf(writeBuf, "", );
+		
 		if (duration.toSec() - (int)duration.toSec() < 0.02)
 			ROS_INFO("File: %s on %.0f seconds", filename, duration.toSec());
 		
-		outFile<<timebuf<<g_userDetected<<";"<<g_userPosX<<";"<<g_userPosY<<";"<<g_userDistance<<";";
+		outFile<<timebuf<<";"<<g_userDetected?1:0<<";"<<g_userPosX<<";"<<g_userPosY<<";"<<g_userDistance<<";";
 		outFile<<g_velocity.linear.x<<";"<<g_velocity.linear.y<<";"<<g_velocity.angular.z<<";";
-		outFile<<g_gestState<<";"<<g_gestOffLinX<<";"<<g_gestOffLinY<<";";
+		outFile<<g_gestState<<";"<<g_gestOffLinX<<";"<<g_gestOffLinY;
 		
 		outFile<<"\n";
 
