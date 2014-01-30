@@ -76,7 +76,7 @@ int main(int argc, char** argv)
 	
 	time(&rawtime);
 	timeinfo = localtime(&rawtime);
-	strftime(filename, 80, "youbotStalker_%Y-%m-%d_%H-%M.txt", timeinfo);
+	strftime(filename, 80, "youbotStalker_%Y-%m-%d_%H-%M.csv", timeinfo);
 	
 	std::ofstream outFile;
 	outFile.open(filename);
