@@ -100,7 +100,7 @@ int main(int argc, char** argv)
 		
 		outFile<<timebuf<<g_userDetected<<";"<<g_userPosX<<";"<<g_userPosY<<";"<<g_userDistance<<";";
 		outFile<<g_velocity.linear.x<<";"<<g_velocity.linear.y<<";"<<g_velocity.angular.z<<";";
-		outFIle<<g_gestState<<";"<<g_gestOffLinX<<";"<<g_gestOffLinY<<";";
+		outFile<<g_gestState<<";"<<g_gestOffLinX<<";"<<g_gestOffLinY<<";";
 		
 		outFile<<"\n";
 
